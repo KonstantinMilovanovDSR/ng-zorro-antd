@@ -5,7 +5,7 @@
 
 import { Observable, Subject } from 'rxjs';
 
-import { isNil, isNotNil } from 'ng-zorro-antd/core/util';
+import { isNil, isNotNil } from './utils';
 
 export class TimeHolder {
   selected12Hours: string | undefined = undefined;
