@@ -21,11 +21,10 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { reqAnimFrame } from 'ng-zorro-antd/core/polyfill';
-import { BooleanInput } from 'ng-zorro-antd/core/types';
+import { BooleanInput } from './types';
 
-import { InputBoolean, isNotNil } from 'ng-zorro-antd/core/util';
-import { DateHelperService } from 'ng-zorro-antd/i18n';
+import { isNotNil, InputBoolean } from './utils';
+import { DateHelperByDatePipe } from './date-helper.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TimeHolder } from './time-holder';
@@ -105,12 +104,12 @@ export type NzTimePickerUnit = 'hour' | 'minute' | 'second' | '12-hour';
       <ul class="ant-picker-ranges">
         <li class="ant-picker-now">
           <a (click)="onClickNow()">
-            {{ nzNowText || ('Calendar.lang.now' | nzI18n) }}
+            {{ nzNowText }}
           </a>
         </li>
         <li class="ant-picker-ok">
           <button nz-button type="button" nzSize="small" nzType="primary" (click)="onClickOk()">
-            {{ nzOkText || ('Calendar.lang.ok' | nzI18n) }}
+            {{ nzOkText }}
           </button>
         </li>
       </ul>
@@ -446,7 +445,7 @@ export class NzTimePickerPanelComponent implements ControlValueAccessor, OnInit,
     const difference = to - element.scrollTop;
     const perTick = (difference / duration) * 10;
 
-    reqAnimFrame(() => {
+    requestAnimationFrame(() => {
       element.scrollTop = element.scrollTop + perTick;
       if (element.scrollTop === to) {
         return;
@@ -521,7 +520,7 @@ export class NzTimePickerPanelComponent implements ControlValueAccessor, OnInit,
     return value.value.toUpperCase() === this.time.selected12Hours;
   }
 
-  constructor(private cdr: ChangeDetectorRef, public dateHelper: DateHelperService, private elementRef: ElementRef) {
+  constructor(private cdr: ChangeDetectorRef, public dateHelper: DateHelperByDatePipe, private elementRef: ElementRef) {
     // TODO: move to host after View Engine deprecation
     this.elementRef.nativeElement.classList.add('ant-picker-time-panel');
   }

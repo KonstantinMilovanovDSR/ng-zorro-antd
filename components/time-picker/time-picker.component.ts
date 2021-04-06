@@ -1,11 +1,3 @@
-/**
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://github.com/NG-ZORRO/ng-zorro-antd/blob/master/LICENSE
- */
-
-import { Direction, Directionality } from '@angular/cdk/bidi';
-import { CdkOverlayOrigin, ConnectionPositionPair } from '@angular/cdk/overlay';
-import { Platform } from '@angular/cdk/platform';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -27,17 +19,14 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { isValid } from 'date-fns';
-import { slideMotion } from 'ng-zorro-antd/core/animation';
+import { slideMotion } from './animations';
 
-import { NzConfigKey, NzConfigService, WithConfig } from 'ng-zorro-antd/core/config';
-import { warn } from 'ng-zorro-antd/core/logger';
-import { BooleanInput, NzSafeAny } from 'ng-zorro-antd/core/types';
-import { InputBoolean, isNil } from 'ng-zorro-antd/core/util';
-import { DateHelperService, NzI18nInterface, NzI18nService } from 'ng-zorro-antd/i18n';
+import { WithConfig } from './utils';
+import { BooleanInput, NzSafeAny } from './types';
+import { InputBoolean, isNil } from './utils';
+import { DateHelperByDatePipe } from './date-helper.service'
 import { Observable, of, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-
-const NZ_CONFIG_MODULE_NAME: NzConfigKey = 'timePicker';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -61,27 +50,16 @@ const NZ_CONFIG_MODULE_NAME: NzConfigKey = 'timePicker';
         (ngModelChange)="onInputChange($event)"
       />
       <span class="ant-picker-suffix">
-        <ng-container *nzStringTemplateOutlet="nzSuffixIcon; let suffixIcon">
+        <!--ng-container *nzStringTemplateOutlet="nzSuffixIcon; let suffixIcon">
           <i nz-icon [nzType]="suffixIcon"></i>
-        </ng-container>
+        </ng-container-->
       </span>
       <span *ngIf="nzAllowEmpty && !nzDisabled && value" class="ant-picker-clear" (click)="onClickClearBtn($event)">
         <i nz-icon nzType="close-circle" nzTheme="fill" [attr.aria-label]="nzClearText" [attr.title]="nzClearText"></i>
       </span>
     </div>
 
-    <ng-template
-      cdkConnectedOverlay
-      nzConnectedOverlay
-      [cdkConnectedOverlayHasBackdrop]="nzBackdrop"
-      [cdkConnectedOverlayPositions]="overlayPositions"
-      [cdkConnectedOverlayOrigin]="origin"
-      [cdkConnectedOverlayOpen]="nzOpen"
-      [cdkConnectedOverlayOffsetY]="-2"
-      [cdkConnectedOverlayTransformOriginOn]="'.ant-picker-dropdown'"
-      (detach)="close()"
-      (overlayOutsideClick)="onClickOutside($event)"
-    >
+    <ng-template>
       <div [@slideMotion]="'enter'" class="ant-picker-dropdown">
         <div class="ant-picker-panel-container">
           <div tabindex="-1" class="ant-picker-panel">
@@ -121,11 +99,10 @@ const NZ_CONFIG_MODULE_NAME: NzConfigKey = 'timePicker';
     '(click)': 'open()'
   },
   animations: [slideMotion],
-  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: NzTimePickerComponent, multi: true }]
+  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: NzTimePickerComponent, multi: true }],
+  styleUrls: ['./ng-zorro-antd.css']
 })
 export class NzTimePickerComponent implements ControlValueAccessor, OnInit, AfterViewInit, OnChanges, OnDestroy {
-  readonly _nzModuleName: NzConfigKey = NZ_CONFIG_MODULE_NAME;
-
   static ngAcceptInputType_nzUse12Hours: BooleanInput;
   static ngAcceptInputType_nzHideDisabledOptions: BooleanInput;
   static ngAcceptInputType_nzAllowEmpty: BooleanInput;
@@ -140,19 +117,9 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
   inputValue: string = '';
   value: Date | null = null;
   preValue: Date | null = null;
-  origin!: CdkOverlayOrigin;
   inputSize?: number;
   i18nPlaceHolder$: Observable<string | undefined> = of(undefined);
-  overlayPositions: ConnectionPositionPair[] = [
-    {
-      originX: 'start',
-      originY: 'bottom',
-      overlayX: 'start',
-      overlayY: 'top',
-      offsetY: 3
-    }
-  ];
-  dir: Direction = 'ltr';
+  dir: string = 'ltr';
 
   @ViewChild('inputElement', { static: true }) inputRef!: ElementRef<HTMLInputElement>;
   @Input() nzId: string | null = null;
@@ -269,7 +236,7 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
   }
 
   onInputChange(str: string): void {
-    if (!this.platform.TRIDENT && document.activeElement === this.inputRef.nativeElement) {
+    if (document.activeElement === this.inputRef.nativeElement) {
       this.open();
       this.parseTimeString(str);
     }
@@ -286,15 +253,11 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
   }
 
   constructor(
-    public nzConfigService: NzConfigService,
-    protected i18n: NzI18nService,
     private element: ElementRef,
     private renderer: Renderer2,
     private cdr: ChangeDetectorRef,
-    private dateHelper: DateHelperService,
-    private platform: Platform,
-    private elementRef: ElementRef,
-    @Optional() private directionality: Directionality
+    private dateHelper: DateHelperByDatePipe,
+    private elementRef: ElementRef
   ) {
     // TODO: move to host after View Engine deprecation
     this.elementRef.nativeElement.classList.add('ant-picker');
@@ -302,14 +265,9 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
 
   ngOnInit(): void {
     this.inputSize = Math.max(8, this.nzFormat.length) + 2;
-    this.origin = new CdkOverlayOrigin(this.element);
 
-    this.i18nPlaceHolder$ = this.i18n.localeChange.pipe(map((nzLocale: NzI18nInterface) => nzLocale.TimePicker.placeholder));
-
-    this.dir = this.directionality.value;
-    this.directionality.change?.pipe(takeUntil(this.destroy$)).subscribe((direction: Direction) => {
-      this.dir = direction;
-    });
+    // TODO: locale
+    // this.i18nPlaceHolder$ = this.i18n.localeChange.pipe(map((nzLocale: NzI18nInterface) => nzLocale.TimePicker.placeholder));
   }
 
   ngOnDestroy(): void {
@@ -357,7 +315,7 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
     } else if (isNil(time)) {
       result = null;
     } else {
-      warn('Non-Date type is not recommended for time-picker, use "Date" type.');
+      console.warn('Non-Date type is not recommended for time-picker, use "Date" type.');
       result = new Date(time);
     }
 
