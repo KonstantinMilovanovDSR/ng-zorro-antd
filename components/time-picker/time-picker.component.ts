@@ -261,7 +261,6 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
       this.open();
       if (!str) {
         this.setValue(null)
-        return
       }
       this.parseTimeString(str);
     }
@@ -329,8 +328,8 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
   }
 
   parseTimeString(str: string): void {
-    const value = this.dateHelper.parseTime(str, this.nzFormat) || null;
-    if (isValid(value)) {
+    const value = !str ? null : (this.dateHelper.parseTime(str, this.nzFormat) || null);
+    if (isValid(value) || value === null) {
       this.value = value;
       // Report changes
       this.onValueChange.emit({invoker: ValueChangeInvoker.FROM_INPUT, value})
