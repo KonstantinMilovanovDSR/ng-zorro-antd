@@ -1,15 +1,19 @@
 import {
   AfterViewInit,
+  ApplicationRef,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ComponentFactoryResolver,
+  ComponentRef,
   ElementRef,
+  EmbeddedViewRef,
   EventEmitter,
+  Injector,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
-  Optional,
   Output,
   Renderer2,
   SimpleChanges,
@@ -21,75 +25,19 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { isValid } from 'date-fns';
 import { slideMotion } from './animations';
 
-import { WithConfig } from './utils';
-import { BooleanInput, NzSafeAny } from './types';
-import { InputBoolean, isNil } from './utils';
+import { BooleanInput, ValueChangeAction, ValueChangeInvoker } from './types';
+import { isNil } from './utils';
 import { DateHelperByDatePipe } from './date-helper.service'
 import { Observable, of, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { NzTimePickerPanelComponent } from './time-picker-panel.component';
+import { TimeHolder } from './time-holder';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'nz-time-picker',
   exportAs: 'nzTimePicker',
-  template: `
-    <div class="ant-picker-input">
-      <input
-        #inputElement
-        [attr.id]="nzId"
-        type="text"
-        [size]="inputSize"
-        [placeholder]="nzPlaceHolder || (i18nPlaceHolder$ | async)"
-        [(ngModel)]="inputValue"
-        [disabled]="nzDisabled"
-        (focus)="onFocus(true)"
-        (blur)="onFocus(false)"
-        (keyup.enter)="onKeyupEnter()"
-        (keyup.escape)="onKeyupEsc()"
-        (ngModelChange)="onInputChange($event)"
-      />
-      <span class="ant-picker-suffix">
-        <!--ng-container *nzStringTemplateOutlet="nzSuffixIcon; let suffixIcon">
-          <i nz-icon [nzType]="suffixIcon"></i>
-        </ng-container-->
-      </span>
-      <span *ngIf="nzAllowEmpty && !nzDisabled && value" class="ant-picker-clear" (click)="onClickClearBtn($event)">
-        <i nz-icon nzType="close-circle" nzTheme="fill" [attr.aria-label]="nzClearText" [attr.title]="nzClearText"></i>
-      </span>
-    </div>
-
-    <ng-template>
-      <div [@slideMotion]="'enter'" class="ant-picker-dropdown">
-        <div class="ant-picker-panel-container">
-          <div tabindex="-1" class="ant-picker-panel">
-            <nz-time-picker-panel
-              [ngClass]="nzPopupClassName"
-              [format]="nzFormat"
-              [nzHourStep]="nzHourStep"
-              [nzMinuteStep]="nzMinuteStep"
-              [nzSecondStep]="nzSecondStep"
-              [nzDisabledHours]="nzDisabledHours"
-              [nzDisabledMinutes]="nzDisabledMinutes"
-              [nzDisabledSeconds]="nzDisabledSeconds"
-              [nzPlaceHolder]="nzPlaceHolder || (i18nPlaceHolder$ | async)"
-              [nzHideDisabledOptions]="nzHideDisabledOptions"
-              [nzUse12Hours]="nzUse12Hours"
-              [nzDefaultOpenValue]="nzDefaultOpenValue"
-              [nzAddOn]="nzAddOn"
-              [nzClearText]="nzClearText"
-              [nzNowText]="nzNowText"
-              [nzOkText]="nzOkText"
-              [nzAllowEmpty]="nzAllowEmpty"
-              [(ngModel)]="value"
-              (ngModelChange)="onPanelValueChange($event)"
-              (closePanel)="setCurrentValueAndClose()"
-            ></nz-time-picker-panel>
-          </div>
-        </div>
-      </div>
-    </ng-template>
-  `,
+  templateUrl: './time-picker.component.html',
   host: {
     '[class.ant-picker-large]': `nzSize === 'large'`,
     '[class.ant-picker-small]': `nzSize === 'small'`,
@@ -124,31 +72,36 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
   @ViewChild('inputElement', { static: true }) inputRef!: ElementRef<HTMLInputElement>;
   @Input() nzId: string | null = null;
   @Input() nzSize: string | null = null;
-  @Input() @WithConfig() nzHourStep: number = 1;
-  @Input() @WithConfig() nzMinuteStep: number = 1;
-  @Input() @WithConfig() nzSecondStep: number = 1;
-  @Input() @WithConfig() nzClearText: string = 'clear';
-  @Input() @WithConfig() nzNowText: string = '';
-  @Input() @WithConfig() nzOkText: string = '';
-  @Input() @WithConfig() nzPopupClassName: string = '';
+  @Input() nzHourStep: number = 1;
+  @Input() nzMinuteStep: number = 1;
+  @Input() nzSecondStep: number = 1;
+  @Input() nzClearText: string = 'clear';
+  @Input() nzNowText: string = '';
+  @Input() nzOkText: string = '';
+  @Input() nzPopupClassName: string = '';
   @Input() nzPlaceHolder = '';
   @Input() nzAddOn?: TemplateRef<void>;
   @Input() nzDefaultOpenValue?: Date;
   @Input() nzDisabledHours?: () => number[];
   @Input() nzDisabledMinutes?: (hour: number) => number[];
   @Input() nzDisabledSeconds?: (hour: number, minute: number) => number[];
-  @Input() @WithConfig() nzFormat: string = 'HH:mm:ss';
+  @Input() nzFormat: string = 'HH:mm:ss';
   @Input() nzOpen = false;
-  @Input() @WithConfig() @InputBoolean() nzUse12Hours: boolean = false;
-  @Input() @WithConfig() nzSuffixIcon: string | TemplateRef<NzSafeAny> = 'clock-circle';
+  @Input() nzUse12Hours: boolean = false;
+  @Input() nzHideDisabledOptions = false;
+  @Input() nzAllowEmpty: boolean = true;
+  @Input() nzDisabled = false;
+  @Input() nzAutoFocus = false;
+  @Input() nzSelectTextOnFocus = true;
+  // lw inputs
+  @Input() nzParentRef: ElementRef
 
   @Output() readonly nzOpenChange = new EventEmitter<boolean>();
+  @Output() ngBlur = new EventEmitter<void>();
 
-  @Input() @InputBoolean() nzHideDisabledOptions = false;
-  @Input() @WithConfig() @InputBoolean() nzAllowEmpty: boolean = true;
-  @Input() @InputBoolean() nzDisabled = false;
-  @Input() @InputBoolean() nzAutoFocus = false;
-  @Input() @WithConfig() nzBackdrop = false;
+  private onValueChange = new EventEmitter<ValueChangeAction>();
+
+  private dropDown?: ComponentRef<NzTimePickerPanelComponent>
 
   emitValue(value: Date | null): void {
     this.setValue(value, true);
@@ -171,17 +124,77 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
     this.cdr.markForCheck();
   }
 
+  private setupDropDownPosition(instance) {
+    const inputRect = this.elementRef.nativeElement.getBoundingClientRect();
+    instance.position = { top: inputRect.bottom, left: inputRect.left }
+  }
+
+  private setupDropdownInputs(instance) {
+    instance.initValue = this.value
+    instance.ngClass = this.nzPopupClassName
+    instance.format = this.nzFormat
+    instance.nzHourStep = this.nzHourStep
+    instance.nzMinuteStep = this.nzMinuteStep
+    instance.nzSecondStep = this.nzSecondStep
+    instance.nzDisabledHours = this.nzDisabledHours
+    instance.nzDisabledMinutes = this.nzDisabledMinutes
+    instance.nzDisabledSeconds = this.nzDisabledSeconds
+    instance.nzPlaceHolder = this.nzPlaceHolder
+    instance.nzHideDisabledOptions = this.nzHideDisabledOptions
+    instance.nzUse12Hours = this.nzUse12Hours
+    instance.nzDefaultOpenValue = this.nzDefaultOpenValue
+    instance.nzAddOn = this.nzAddOn
+    instance.nzClearText = this.nzClearText
+    instance.nzNowText = this.nzNowText
+    instance.nzOkText = this.nzOkText
+    instance.nzAllowEmpty = this.nzAllowEmpty
+    instance.onValueChange = this.onValueChange
+  }
+
+  private initDropDownInstance(instance) {
+    this.setupDropDownPosition(instance)
+    this.setupDropdownInputs(instance)
+    instance.closePanel.subscribe(($event) => this.handleClosePanel($event))
+  }
+
+  private handleClosePanel($event: TimeHolder) {
+    if ($event.value) {
+      this.setValue($event.value);
+    }
+    this.setCurrentValueAndClose()
+  }
+
+  createDropDown() {
+    const factory = this.componentFactoryResolver.resolveComponentFactory(NzTimePickerPanelComponent)
+		this.dropDown = factory.create(this.injector)
+    this.initDropDownInstance(this.dropDown.instance)
+    this.appRef.attachView(this.dropDown.hostView)
+		const hostComponent = (this.dropDown.hostView as EmbeddedViewRef<any>).rootNodes[0]
+		document.body.append(hostComponent)
+  }
+
+  destroyDropDown() {
+    if (!this.dropDown) {
+			return
+		}
+		this.appRef.detachView(this.dropDown.hostView)
+		this.dropDown.destroy()
+		this.dropDown = undefined
+  }
+
   open(): void {
     if (this.nzDisabled || this.nzOpen) {
       return;
     }
     this.focus();
+    this.createDropDown()
     this.nzOpen = true;
     this.nzOpenChange.emit(this.nzOpen);
   }
 
   close(): void {
     this.nzOpen = false;
+    this.destroyDropDown()
     this.cdr.markForCheck();
     this.nzOpenChange.emit(this.nzOpen);
   }
@@ -207,8 +220,16 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
     }
   }
 
+  onBlur() {
+    this.onFocus(false)
+    this.ngBlur.emit()
+  }
+  
   onFocus(value: boolean): void {
     this.focused = value;
+    if (value && this.nzSelectTextOnFocus) {
+      this.inputRef.nativeElement.setSelectionRange(0, this.inputRef.nativeElement.value.length)
+    }
   }
 
   focus(): void {
@@ -228,9 +249,9 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
   }
 
   onKeyupEnter(): void {
-    if (this.nzOpen && isValid(this.value)) {
+    if (this.nzOpen) {
       this.setCurrentValueAndClose();
-    } else if (!this.nzOpen) {
+    } else {
       this.open();
     }
   }
@@ -238,6 +259,10 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
   onInputChange(str: string): void {
     if (document.activeElement === this.inputRef.nativeElement) {
       this.open();
+      if (!str) {
+        this.setValue(null)
+        return
+      }
       this.parseTimeString(str);
     }
   }
@@ -249,6 +274,7 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
 
   setCurrentValueAndClose(): void {
     this.emitValue(this.value);
+    this.blur()
     this.close();
   }
 
@@ -257,17 +283,25 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
     private renderer: Renderer2,
     private cdr: ChangeDetectorRef,
     private dateHelper: DateHelperByDatePipe,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private appRef: ApplicationRef,
+		private componentFactoryResolver: ComponentFactoryResolver,
+    private injector: Injector
   ) {
     // TODO: move to host after View Engine deprecation
     this.elementRef.nativeElement.classList.add('ant-picker');
   }
 
+  private handlePanelChange(action: ValueChangeAction) {
+    if (action.invoker === ValueChangeInvoker.FROM_PANEL) {
+      this.onPanelValueChange(action.value)
+    }
+  }
+
   ngOnInit(): void {
     this.inputSize = Math.max(8, this.nzFormat.length) + 2;
 
-    // TODO: locale
-    // this.i18nPlaceHolder$ = this.i18n.localeChange.pipe(map((nzLocale: NzI18nInterface) => nzLocale.TimePicker.placeholder));
+    this.onValueChange.subscribe((action) => this.handlePanelChange(action))
   }
 
   ngOnDestroy(): void {
@@ -298,6 +332,8 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
     const value = this.dateHelper.parseTime(str, this.nzFormat) || null;
     if (isValid(value)) {
       this.value = value;
+      // Report changes
+      this.onValueChange.emit({invoker: ValueChangeInvoker.FROM_INPUT, value})
       this.cdr.markForCheck();
     }
   }

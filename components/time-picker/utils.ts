@@ -66,11 +66,8 @@ export function WithConfig<T>() {
           return originalValue;
         }
 
-        const componentConfig = this.nzConfigService.getConfigForComponent(this._nzModuleName) || {};
-        const configValue = componentConfig[propName];
-        const ret = isDefined(configValue) ? configValue : originalValue;
 
-        return ret;
+        return originalValue;
       },
       set(value?: T): void {
         // If the value is assigned, we consider the newly assigned value as 'assigned by user'.
