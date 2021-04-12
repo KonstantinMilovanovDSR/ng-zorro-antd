@@ -1,0 +1,25 @@
+<div class="ant-picker-input">
+    <input
+      #inputElement
+      [attr.id]="nzId"
+      type="text"
+      [size]="inputSize"
+      [placeholder]="nzPlaceHolder || (i18nPlaceHolder$ | async)"
+      [(ngModel)]="inputValue"
+      [disabled]="nzDisabled"
+      (focus)="onFocus(true)"
+      (blur)="onBlur()"
+      (keyup.enter)="onKeyupEnter()"
+      (keyup.escape)="onKeyupEsc()"
+      (ngModelChange)="onInputChange($event)"
+    />
+    <!--TODO: replace icon to lw level while styling-->
+    <!-- <span class="ant-picker-suffix">
+      ng-container *nzStringTemplateOutlet="nzSuffixIcon; let suffixIcon">
+        <i nz-icon [nzType]="suffixIcon"></i>
+      </ng-container
+    </span>
+    <span *ngIf="nzAllowEmpty && !nzDisabled && value" class="ant-picker-clear" (click)="onClickClearBtn($event)">
+      <i nz-icon nzType="close-circle" nzTheme="fill" [attr.aria-label]="nzClearText" [attr.title]="nzClearText"></i>
+    </span> -->
+</div>

@@ -97,7 +97,7 @@ export class DateHelperByDatePipe extends DateHelperService {
 
   format(date: Date | null, formatStr: string): string {
     // TODO: locale
-    return date ? formatDate(date, formatStr, null)! : '';
+    return date ? formatDate(date, formatStr, 'en-US')! : '';
   }
 
   parseDate(text: string): Date {
@@ -106,7 +106,7 @@ export class DateHelperByDatePipe extends DateHelperService {
 
   parseTime(text: string, formatStr: string): Date {
     // TODO: locale
-    const parser = new NgTimeParser(formatStr, null);
+    const parser = new NgTimeParser(formatStr, 'en-US');
     return parser.toDate(text);
   }
 }
