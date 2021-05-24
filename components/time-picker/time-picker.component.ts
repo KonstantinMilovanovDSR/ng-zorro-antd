@@ -304,6 +304,7 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
   }
 
   ngOnDestroy(): void {
+    this.destroyDropDown()
     this.destroy$.next();
     this.destroy$.complete();
   }
