@@ -372,9 +372,22 @@ export class NzTimePickerPanelComponent implements ControlValueAccessor, OnInit,
     }
   }
 
+  fixScrollPosition(element, offseetTop) {
+    setTimeout(() => {
+      if (Math.round(offseetTop) !== Math.round(element.scrollTop)) {
+        element.scrollTo({top: offseetTop + 1, behavior: 'smooth'})
+        element.scrollTo({top: offseetTop, behavior: 'smooth'})
+      }
+      if (Math.round(offseetTop) !== Math.round(element.scrollTop)) { 
+        element.scrollTo({top: offseetTop + 0.5, behavior: 'smooth'})
+      }
+    })
+  }
+
   scrollTo(element: HTMLElement, to: number, duration: number): void {
     if (duration <= 0) {
       element.scrollTop = to;
+      this.fixScrollPosition(element, to)
       return;
     }
     const difference = to - element.scrollTop;
@@ -383,6 +396,8 @@ export class NzTimePickerPanelComponent implements ControlValueAccessor, OnInit,
     requestAnimationFrame(() => {
       element.scrollTop = element.scrollTop + perTick;
       if (element.scrollTop === to) {
+        element.scrollTop = to;
+        this.fixScrollPosition(element, to)
         return;
       }
       this.scrollTo(element, to, duration - 10);
