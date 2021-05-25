@@ -372,14 +372,14 @@ export class NzTimePickerPanelComponent implements ControlValueAccessor, OnInit,
     }
   }
 
-  fixScrollPosition(element, offseetTop) {
+  fixScrollPosition(element, offsetTop) {
     setTimeout(() => {
-      if (Math.round(offseetTop) !== Math.round(element.scrollTop)) {
-        element.scrollTo({top: offseetTop + 1, behavior: 'smooth'})
-        element.scrollTo({top: offseetTop, behavior: 'smooth'})
+      if (Math.round(offsetTop) !== Math.round(element.scrollTop)) {
+        element.scrollTo({top: offsetTop + 1, behavior: 'smooth'})
+        element.scrollTo({top: offsetTop, behavior: 'smooth'})
       }
-      if (Math.round(offseetTop) !== Math.round(element.scrollTop)) { 
-        element.scrollTo({top: offseetTop + 0.5, behavior: 'smooth'})
+      if (Math.round(offsetTop) !== Math.round(element.scrollTop)) { 
+        element.scrollTo({top: offsetTop + 0.5, behavior: 'smooth'})
       }
     })
   }

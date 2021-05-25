@@ -56,7 +56,7 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
   static ngAcceptInputType_nzAllowEmpty: BooleanInput;
   static ngAcceptInputType_nzDisabled: BooleanInput;
   static ngAcceptInputType_nzAutoFocus: BooleanInput;
-
+  static PANEL_HEIGHT = 303
   private _onChange?: (value: Date | null) => void;
   private _onTouched?: () => void;
   private destroy$ = new Subject<void>();
@@ -95,6 +95,7 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
   @Input() nzSelectTextOnFocus = true;
   // lw inputs
   @Input() nzParentRef: ElementRef
+  @Input() bottomToTopDisabled = false
 
   @Output() readonly nzOpenChange = new EventEmitter<boolean>();
   @Output() ngBlur = new EventEmitter<void>();
@@ -126,8 +127,27 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
 
   private setupDropDownPosition(instance) {
     const inputRect = this.elementRef.nativeElement.getBoundingClientRect();
-    instance.position = { top: inputRect.bottom, left: inputRect.left }
+
+		if (this.bottomToTopDisabled || this.isTopToBottom(inputRect)) {
+      instance.position = { top: inputRect.bottom, left: inputRect.left }
+		} else {
+      instance.position = { top: inputRect.top - NzTimePickerComponent.PANEL_HEIGHT, left: inputRect.left }
+		}
   }
+
+	isTopToBottom(rect) {
+    const pannelHeight = NzTimePickerComponent.PANEL_HEIGHT
+		const topSpace = rect.top
+		const bottomY = rect.bottom + pannelHeight
+
+		const fitVertically = window.innerHeight > bottomY
+		if (!fitVertically) {
+			// When not fit bottom and top in same time, show top to bottom (then user can scroll or see top half of option text)
+			return topSpace < pannelHeight
+		}
+
+		return true
+	}
 
   private setupDropdownInputs(instance) {
     instance.initValue = this.value
