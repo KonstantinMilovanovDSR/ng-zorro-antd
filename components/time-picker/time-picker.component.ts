@@ -352,6 +352,9 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
     const value = !str ? null : (this.dateHelper.parseTime(str, this.nzFormat) || null);
     if (isValid(value) || value === null) {
       this.value = value;
+      if (str?.toUpperCase().includes('AM') && this.value?.getHours() === 12) {
+        this.value.setHours(0)
+      }
       // Report changes
       this.onValueChange.emit({invoker: ValueChangeInvoker.FROM_INPUT, value})
       this.cdr.markForCheck();
