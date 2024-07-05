@@ -133,11 +133,5 @@
       "tslint --project components/tsconfig.lib.json -c tslint.json --fix",
       "git add"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged"
-    }
   }
 }
