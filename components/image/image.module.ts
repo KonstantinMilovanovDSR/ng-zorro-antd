@@ -17,10 +17,9 @@ import { NzImageDirective } from './image.directive';
 import { NzImageService } from './image.service';
 
 @NgModule({
-  imports: [BidiModule, OverlayModule, PortalModule, DragDropModule, CommonModule, NzIconModule, NzPipesModule],
-  exports: [NzImageDirective, NzImagePreviewComponent, NzImageGroupComponent],
-  providers: [NzImageService],
-  entryComponents: [NzImagePreviewComponent],
-  declarations: [NzImageDirective, NzImagePreviewComponent, NzImageGroupComponent]
+    imports: [BidiModule, OverlayModule, PortalModule, DragDropModule, CommonModule, NzIconModule, NzPipesModule],
+    exports: [NzImageDirective, NzImagePreviewComponent, NzImageGroupComponent],
+    providers: [NzImageService],
+    declarations: [NzImageDirective, NzImagePreviewComponent, NzImageGroupComponent]
 })
 export class NzImageModule {}

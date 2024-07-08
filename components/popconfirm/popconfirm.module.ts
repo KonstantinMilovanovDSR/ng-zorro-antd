@@ -19,20 +19,19 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzPopconfirmComponent, NzPopconfirmDirective } from './popconfirm';
 
 @NgModule({
-  declarations: [NzPopconfirmComponent, NzPopconfirmDirective],
-  exports: [NzPopconfirmComponent, NzPopconfirmDirective],
-  entryComponents: [NzPopconfirmComponent],
-  imports: [
-    BidiModule,
-    CommonModule,
-    NzButtonModule,
-    OverlayModule,
-    NzI18nModule,
-    NzIconModule,
-    NzOutletModule,
-    NzOverlayModule,
-    NzNoAnimationModule,
-    NzToolTipModule
-  ]
+    declarations: [NzPopconfirmComponent, NzPopconfirmDirective],
+    exports: [NzPopconfirmComponent, NzPopconfirmDirective],
+    imports: [
+        BidiModule,
+        CommonModule,
+        NzButtonModule,
+        OverlayModule,
+        NzI18nModule,
+        NzIconModule,
+        NzOutletModule,
+        NzOverlayModule,
+        NzNoAnimationModule,
+        NzToolTipModule
+    ]
 })
 export class NzPopconfirmModule {}

@@ -28,33 +28,32 @@ import { NzModalComponent } from './modal.component';
 import { NzModalService } from './modal.service';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    BidiModule,
-    OverlayModule,
-    NzOutletModule,
-    PortalModule,
-    NzI18nModule,
-    NzButtonModule,
-    NzIconModule,
-    NzPipesModule,
-    NzNoAnimationModule,
-    NzPipesModule
-  ],
-  exports: [NzModalComponent, NzModalFooterDirective, NzModalContentDirective, NzModalTitleDirective],
-  providers: [NzModalService],
-  entryComponents: [NzModalContainerComponent, NzModalConfirmContainerComponent],
-  declarations: [
-    NzModalComponent,
-    NzModalFooterDirective,
-    NzModalContentDirective,
-    NzModalCloseComponent,
-    NzModalFooterComponent,
-    NzModalTitleComponent,
-    NzModalTitleDirective,
-    NzModalContainerComponent,
-    NzModalConfirmContainerComponent,
-    NzModalComponent
-  ]
+    imports: [
+        CommonModule,
+        BidiModule,
+        OverlayModule,
+        NzOutletModule,
+        PortalModule,
+        NzI18nModule,
+        NzButtonModule,
+        NzIconModule,
+        NzPipesModule,
+        NzNoAnimationModule,
+        NzPipesModule
+    ],
+    exports: [NzModalComponent, NzModalFooterDirective, NzModalContentDirective, NzModalTitleDirective],
+    providers: [NzModalService],
+    declarations: [
+        NzModalComponent,
+        NzModalFooterDirective,
+        NzModalContentDirective,
+        NzModalCloseComponent,
+        NzModalFooterComponent,
+        NzModalTitleComponent,
+        NzModalTitleDirective,
+        NzModalContainerComponent,
+        NzModalConfirmContainerComponent,
+        NzModalComponent
+    ]
 })
 export class NzModalModule {}
