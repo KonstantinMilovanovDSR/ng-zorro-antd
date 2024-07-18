@@ -10,6 +10,8 @@ import { join } from "path";
 import { createTestApp } from '../testing/test-app';
 import { createCustomTheme } from '../utils/create-custom-theme';
 
+const projectName = 'ng-zorro-antd-lib'
+
 describe('ng-add schematic', () => {
   let runner: SchematicTestRunner;
   let appTree: Tree;
@@ -57,7 +59,7 @@ describe('ng-add schematic', () => {
   it('should add hammerjs import to project main file', async () => {
     const tree = await runner.runSchematicAsync('ng-add-setup-project', {gestures: true}, appTree).toPromise();
     const workspace = await getWorkspace(tree);
-    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition);
+    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition, projectName);
     const fileContent = getFileContent(tree, normalize(join(project.sourceRoot, 'main.ts')));
 
     expect(fileContent).toContain(`import 'hammerjs';`);
@@ -66,7 +68,7 @@ describe('ng-add schematic', () => {
   it('should add default theme', async () => {
     const tree = await runner.runSchematicAsync('ng-add-setup-project', {}, appTree).toPromise();
     const workspace = await getWorkspace(tree);
-    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition);
+    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition, projectName);
 
     expect(getProjectTargetOptions(project, 'build').styles)
     .toContain('./node_modules/ng-zorro-antd/ng-zorro-antd.min.css');
@@ -76,7 +78,7 @@ describe('ng-add schematic', () => {
     appTree = await createTestApp(runner, {style: 'less'});
     const tree = await runner.runSchematicAsync('ng-add-setup-project', {theme: true}, appTree).toPromise();
     const workspace = await getWorkspace(tree);
-    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition);
+    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition, projectName);
 
     const customThemePath = normalize(join(project.sourceRoot, 'styles.less'));
     const buffer = tree.read(customThemePath);
@@ -91,7 +93,7 @@ describe('ng-add schematic', () => {
   it('should add custom theme file when no LESS file in project', async () => {
     const tree = await runner.runSchematicAsync('ng-add-setup-project', {theme: true}, appTree).toPromise();
     const workspace = await getWorkspace(tree);
-    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition);
+    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition, projectName);
 
     expect(getProjectTargetOptions(project, 'build').styles)
     .toContain('projects/ng-zorro/src/theme.less');
@@ -100,7 +102,7 @@ describe('ng-add schematic', () => {
   it('should add icon assets', async () => {
     const tree = await runner.runSchematicAsync('ng-add-setup-project', {dynamicIcon: true}, appTree).toPromise();
     const workspace = await getWorkspace(tree);
-    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition);
+    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition, projectName);
     const assets = getProjectTargetOptions(project, 'build').assets;
 
     const assetsString = JSON.stringify(assets);
@@ -133,7 +135,7 @@ describe('ng-add schematic', () => {
 
   it('should not add BrowserAnimationsModule if NoopAnimationsModule is set up', async () => {
     const workspace = await getWorkspace(appTree);
-    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition);
+    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition, projectName);
 
     addModuleImportToRootModule(
       appTree, 'NoopAnimationsModule', '@angular/platform-browser/animations', project);
@@ -148,7 +150,7 @@ describe('ng-add schematic', () => {
 
   it('should not add NoopAnimationsModule if BrowserAnimationsModule is set up', async () => {
     const workspace = await getWorkspace(appTree);
-    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition);
+    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition, projectName);
 
     addModuleImportToRootModule(
       appTree, 'BrowserAnimationsModule', '@angular/platform-browser/animations', project);

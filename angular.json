@@ -251,7 +251,6 @@
       }
     }
   },
-  "defaultProject": "ng-zorro-antd-doc",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

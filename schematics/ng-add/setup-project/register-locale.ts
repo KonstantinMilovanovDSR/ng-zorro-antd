@@ -7,20 +7,21 @@ import {
   getProjectMainFile,
   insertAfterLastOccurrence,
   insertImport,
-  parseSourceFile
+  parseSourceFile,
 } from '@angular/cdk/schematics';
 import { Change, InsertChange, NoopChange } from '@schematics/angular/utility/change';
 import { getAppModulePath } from '@schematics/angular/utility/ng-ast-utils';
 import { getWorkspace } from '@schematics/angular/utility/workspace';
 import { blue, cyan, yellow } from 'chalk';
 import * as ts from 'typescript';
-
+import * as ts3rd from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import { Schema } from '../schema';
+import { WorkspaceDefinition } from '@angular-devkit/core/src/workspace';
 
 export function registerLocale(options: Schema): Rule {
   return async (host: Tree) => {
     const workspace = await getWorkspace(host);
-    const project = getProjectFromWorkspace(workspace, options.project);
+    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition, options.project);
     const appModulePath = getAppModulePath(host, getProjectMainFile(project));
     const moduleSource = parseSourceFile(host, appModulePath);
 
@@ -29,14 +30,15 @@ export function registerLocale(options: Schema): Rule {
 
     const recorder = host.beginUpdate(appModulePath);
 
+    const moduleSource3rd = moduleSource as unknown as ts3rd.SourceFile
     const changes = [
-      insertImport(moduleSource, appModulePath, 'NZ_I18N',
+      insertImport(moduleSource3rd, appModulePath, 'NZ_I18N',
         'ng-zorro-antd/i18n'),
-      insertImport(moduleSource, appModulePath, locale,
+      insertImport(moduleSource3rd, appModulePath, locale,
         'ng-zorro-antd/i18n'),
-      insertImport(moduleSource, appModulePath, 'registerLocaleData',
+      insertImport(moduleSource3rd, appModulePath, 'registerLocaleData',
         '@angular/common'),
-      insertImport(moduleSource, appModulePath, localePrefix,
+      insertImport(moduleSource3rd, appModulePath, localePrefix,
         `@angular/common/locales/${localePrefix}`, true),
       registerLocaleData(moduleSource, appModulePath, localePrefix),
       ...insertI18nTokenProvide(moduleSource, appModulePath, locale)
@@ -55,8 +57,9 @@ export function registerLocale(options: Schema): Rule {
 }
 
 function registerLocaleData(moduleSource: ts.SourceFile, modulePath: string, locale: string): Change {
-  const allImports = findNodes(moduleSource, ts.SyntaxKind.ImportDeclaration);
-  const allFun = findNodes(moduleSource, ts.SyntaxKind.ExpressionStatement);
+    const moduleSource3rd = moduleSource as unknown as ts3rd.SourceFile
+  const allImports = findNodes(moduleSource3rd, ts3rd.SyntaxKind.ImportDeclaration);
+  const allFun = findNodes(moduleSource3rd, ts3rd.SyntaxKind.ExpressionStatement);
 
   const registerLocaleDataFun = allFun.filter(node => {
     const fun = node.getChildren();
@@ -77,9 +80,10 @@ function registerLocaleData(moduleSource: ts.SourceFile, modulePath: string, loc
 }
 
 function insertI18nTokenProvide(moduleSource: ts.SourceFile, modulePath: string, locale: string): Change[] {
+    const moduleSource3rd = moduleSource as unknown as ts3rd.SourceFile
   const metadataField = 'providers';
-  const nodes = getDecoratorMetadata(moduleSource, 'NgModule', '@angular/core');
-  const addProvide = addSymbolToNgModuleMetadata(moduleSource, modulePath, 'providers',
+  const nodes = getDecoratorMetadata(moduleSource3rd, 'NgModule', '@angular/core');
+  const addProvide = addSymbolToNgModuleMetadata(moduleSource3rd, modulePath, 'providers',
     `{ provide: NZ_I18N, useValue: ${locale} }`, null);
   let node: any = nodes[0];  // tslint:disable-line:no-any
 

@@ -94,7 +94,7 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
   @Input() nzAutoFocus = false;
   @Input() nzSelectTextOnFocus = true;
   // lw inputs
-  @Input() nzParentRef: ElementRef
+  @Input() nzParentRef?: ElementRef
   @Input() bottomToTopDisabled = false
 
   @Output() readonly nzOpenChange = new EventEmitter<boolean>();
@@ -125,7 +125,7 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
     this.cdr.markForCheck();
   }
 
-  private setupDropDownPosition(instance) {
+  private setupDropDownPosition(instance: any) {
     const inputRect = this.elementRef.nativeElement.getBoundingClientRect();
 
 		if (this.bottomToTopDisabled || this.isTopToBottom(inputRect)) {
@@ -135,7 +135,7 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
 		}
   }
 
-	isTopToBottom(rect) {
+	isTopToBottom(rect: any) {
     const pannelHeight = NzTimePickerComponent.PANEL_HEIGHT
 		const topSpace = rect.top
 		const bottomY = rect.bottom + pannelHeight
@@ -149,7 +149,7 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
 		return true
 	}
 
-  private setupDropdownInputs(instance) {
+  private setupDropdownInputs(instance: any) {
     instance.initValue = this.value
     instance.ngClass = this.nzPopupClassName
     instance.format = this.nzFormat
@@ -171,10 +171,10 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
     instance.onValueChange = this.onValueChange
   }
 
-  private initDropDownInstance(instance) {
+  private initDropDownInstance(instance: any) {
     this.setupDropDownPosition(instance)
     this.setupDropdownInputs(instance)
-    instance.closePanel.subscribe(($event) => this.handleClosePanel($event))
+    instance.closePanel.subscribe(($event: TimeHolder) => this.handleClosePanel($event))
   }
 
   private handleClosePanel($event: TimeHolder) {
@@ -356,7 +356,7 @@ export class NzTimePickerComponent implements ControlValueAccessor, OnInit, Afte
         this.value.setHours(0)
       }
       // Report changes
-      this.onValueChange.emit({invoker: ValueChangeInvoker.FROM_INPUT, value})
+      this.onValueChange.emit({invoker: ValueChangeInvoker.FROM_INPUT, value: value as Date})
       this.cdr.markForCheck();
     }
   }

@@ -40,7 +40,7 @@ export class DateHelperByDateFns extends DateHelperService {
   // Use date-fns's "weekStartsOn" to support different locale when "config.firstDayOfWeek" is null
   // https://github.com/date-fns/date-fns/blob/v2.0.0-alpha.27/src/locale/en-US/index.js#L23
   getFirstDayOfWeek(): WeekDayIndex {
-    let defaultWeekStartsOn: WeekDayIndex;
+    let defaultWeekStartsOn: WeekDayIndex = 0;
     try {
       // TODO: locale
       // defaultWeekStartsOn = this.i18n.getDateLocale().options!.weekStartsOn!;
@@ -58,13 +58,13 @@ export class DateHelperByDateFns extends DateHelperService {
    */
   format(date: Date, formatStr: string): string {
     // TODO: locale
-    return date ? fnsFormat(date, formatStr, { locale: null }) : '';
+    return date ? fnsFormat(date, formatStr, { locale: undefined }) : '';
   }
 
   parseDate(text: string, formatStr: string): Date {
     // TODO: locale
     return fnsParse(text, formatStr, new Date(), {
-      locale: null,
+      locale: undefined,
       weekStartsOn: this.getFirstDayOfWeek()
     });
   }

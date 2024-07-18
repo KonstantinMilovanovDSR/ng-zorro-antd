@@ -7,7 +7,7 @@
  */
 
 import { strings, template as interpolateTemplate } from '@angular-devkit/core';
-import { ProjectDefinition } from '@angular-devkit/core/src/workspace';
+import { ProjectDefinition, WorkspaceDefinition } from '@angular-devkit/core/src/workspace';
 import {
   apply,
   applyTemplates,
@@ -229,7 +229,7 @@ export function buildComponent(options: ZorroComponentOptions,
 
   return async (host: Tree, context: FileSystemSchematicContext) => {
     const workspace = await getWorkspace(host);
-    const project = getProjectFromWorkspace(workspace, options.project);
+    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition, options.project);
     const defaultZorroComponentOptions = getDefaultComponentOptions(project);
     let modulePrefix = '';
     // TODO(devversion): Remove if we drop support for older CLI versions.

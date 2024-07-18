@@ -1,5 +1,5 @@
 import { logging, normalize } from '@angular-devkit/core';
-import { ProjectDefinition } from '@angular-devkit/core/src/workspace';
+import { ProjectDefinition, WorkspaceDefinition } from '@angular-devkit/core/src/workspace';
 import { chain, noop, Rule, SchematicContext, SchematicsException, Tree } from '@angular-devkit/schematics';
 import {
   getProjectFromWorkspace,
@@ -42,7 +42,7 @@ async function insertCustomTheme(projectName: string, host: Tree,
                                  logger: logging.LoggerApi): Promise<Rule> {
 
   const workspace = await getWorkspace(host);
-  const project = getProjectFromWorkspace(workspace, projectName);
+  const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition, projectName);
   const stylesPath = getProjectStyleFile(project, 'less');
   const themeContent = createCustomTheme();
 
@@ -85,7 +85,7 @@ function insertCompiledTheme(project: string, logger: logging.LoggerApi): Rule {
 function addThemeStyleToTarget(projectName: string, targetName: 'test' | 'build',
                                assetPath: string, logger: logging.LoggerApi): Rule {
   return updateWorkspace(workspace => {
-    const project = getProjectFromWorkspace(workspace, projectName);
+    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition, projectName);
     // Do not update the builder options in case the target does not use the default CLI builder.
     if (!validateDefaultTargetBuilder(project, targetName, logger)) {
       return;

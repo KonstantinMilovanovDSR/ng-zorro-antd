@@ -6,6 +6,7 @@ import { addPackageToPackageJson } from '../utils/package-config';
 import { getProjectStyle } from '../utils/project-style';
 import { hammerjsVersion, zorroVersion } from '../utils/version-names';
 import { Schema } from './schema';
+import { WorkspaceDefinition } from '@angular-devkit/core/src/workspace';
 
 export default function (options: Schema): Rule {
   return chain([
@@ -21,7 +22,7 @@ export default function (options: Schema): Rule {
     async (host: Tree) => {
       if (options.template) {
         const workspace = await getWorkspace(host);
-        const project = getProjectFromWorkspace(workspace, options.project);
+        const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition, options.project);
         const style = getProjectStyle(project);
 
         return schematic(options.template, {...options, style: style});

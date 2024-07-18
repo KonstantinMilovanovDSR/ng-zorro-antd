@@ -18,7 +18,7 @@ export function toBoolean(value: boolean | string): boolean {
   return value != null && `${value}` !== 'false';
 }
 
-function propDecoratorFactory<T, D>(name: string, fallback: (v: T) => D): (target: NzSafeAny, propName: string) => void {
+function propDecoratorFactory<T, D>(_: string, fallback: (v: T) => D): (target: NzSafeAny, propName: string) => void {
   function propDecorator(target: NzSafeAny, propName: string, originalDescriptor?: TypedPropertyDescriptor<NzSafeAny>): NzSafeAny {
     const privatePropName = `$$__${propName}`;
 
