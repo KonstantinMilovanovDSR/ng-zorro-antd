@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@angular/cdk": "^15.2.9",
-    "@ant-design/icons-angular": "^15.0.0",
+    "@ant-design/icons-angular": "^16.0.0",
     "date-fns": "^2.16.1",
     "ngx-hover-preload": "0.0.3",
     "resize-observer-polyfill": "^1.5.1"
@@ -49,7 +49,7 @@
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-angular": "^11.0.0",
     "@nguniversal/builders": "^16.2.0",
-    "@nguniversal/express-engine": "^15.2.1",
+    "@nguniversal/express-engine": "^16.2.0",
     "@schematics/angular": "^11.2.2",
     "@stackblitz/sdk": "^1.5.2",
     "@types/d3": "^6.2.0",
