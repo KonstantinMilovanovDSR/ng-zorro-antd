@@ -31,7 +31,7 @@
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-angular": "^11.0.0",
     "@nguniversal/builders": "^16.2.0",
-    "@nguniversal/express-engine": "^15.2.1",
+    "@nguniversal/express-engine": "^16.2.0",
     "@schematics/angular": "^11.2.2",
     "@stackblitz/sdk": "^1.5.2",
     "@types/d3": "^6.2.0",
@@ -106,7 +106,7 @@
     "zone.js": "~0.13.3"
   },
   "peerDependencies": {
-    "@angular/cdk": "^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0"
+    "@angular/cdk": "^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0 || ^15.0.0 || ^16.0.0"
   },
   "ngPackage": {
     "lib": {
