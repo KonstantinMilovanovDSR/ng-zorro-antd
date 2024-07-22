@@ -24,22 +24,21 @@ import { NzDropdownMenuComponent } from './dropdown-menu.component';
 import { NzDropDownDirective } from './dropdown.directive';
 
 @NgModule({
-  imports: [
-    BidiModule,
-    CommonModule,
-    OverlayModule,
-    FormsModule,
-    NzButtonModule,
-    NzMenuModule,
-    NzIconModule,
-    NzNoAnimationModule,
-    PlatformModule,
-    NzOverlayModule,
-    NzContextMenuServiceModule,
-    NzOutletModule
-  ],
-  entryComponents: [NzDropdownMenuComponent],
-  declarations: [NzDropDownDirective, NzDropDownADirective, NzDropdownMenuComponent, NzDropdownButtonDirective],
-  exports: [NzMenuModule, NzDropDownDirective, NzDropDownADirective, NzDropdownMenuComponent, NzDropdownButtonDirective]
+    imports: [
+        BidiModule,
+        CommonModule,
+        OverlayModule,
+        FormsModule,
+        NzButtonModule,
+        NzMenuModule,
+        NzIconModule,
+        NzNoAnimationModule,
+        PlatformModule,
+        NzOverlayModule,
+        NzContextMenuServiceModule,
+        NzOutletModule
+    ],
+    declarations: [NzDropDownDirective, NzDropDownADirective, NzDropdownMenuComponent, NzDropdownButtonDirective],
+    exports: [NzMenuModule, NzDropDownDirective, NzDropDownADirective, NzDropdownMenuComponent, NzDropdownButtonDirective]
 })
 export class NzDropDownModule {}

@@ -69,7 +69,7 @@ export class NzIconService extends IconService {
     @Optional() @Inject(DOCUMENT) _document: NzSafeAny,
     @Optional() @Inject(NZ_ICONS) icons?: IconDefinition[]
   ) {
-    super(rendererFactory, handler, _document, sanitizer);
+    super(rendererFactory, handler, _document, sanitizer, []);
 
     this.onConfigChange();
     this.addIcon(...NZ_ICONS_USED_BY_ZORRO, ...(icons || []));

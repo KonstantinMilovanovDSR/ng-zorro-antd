@@ -96,9 +96,9 @@ export class NzTimePickerPanelComponent implements ControlValueAccessor, OnInit,
   @Input() nzUse12Hours = false;
   @Input() nzDefaultOpenValue?: Date;
 
-  @Input() initValue: Date
-  @Input() position: {top: number, left: number};
-  @Input() onValueChange: EventEmitter<ValueChangeAction>;
+  @Input() initValue?: Date
+  @Input() position?: {top: number, left: number};
+  @Input() onValueChange?: EventEmitter<ValueChangeAction>;
   @Output() readonly closePanel = new EventEmitter<any>();
 
   @Input()
@@ -372,7 +372,7 @@ export class NzTimePickerPanelComponent implements ControlValueAccessor, OnInit,
     }
   }
 
-  fixScrollPosition(element, offsetTop) {
+  fixScrollPosition(element: any, offsetTop: number) {
     setTimeout(() => {
       if (Math.round(offsetTop) !== Math.round(element.scrollTop)) {
         element.scrollTo({top: offsetTop + 1, behavior: 'smooth'})
@@ -483,7 +483,7 @@ export class NzTimePickerPanelComponent implements ControlValueAccessor, OnInit,
 
   ngOnInit(): void {
     this.writeValue(this.initValue)
-    this.onValueChange.subscribe((action) => this. handleInputChange(action))
+    this.onValueChange?.subscribe((action) => this. handleInputChange(action))
     this.time.setUse12Hours(this.nzUse12Hours)
     this.time.changes.pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
       this.changed();
@@ -513,7 +513,7 @@ export class NzTimePickerPanelComponent implements ControlValueAccessor, OnInit,
     }
   }
 
-  writeValue(value: Date): void {
+  writeValue(value?: Date): void {
     this.time.setValue(value, this.nzUse12Hours);
     this.buildTimes();
 
@@ -549,6 +549,6 @@ export class NzTimePickerPanelComponent implements ControlValueAccessor, OnInit,
 	}
 
   emitValueChange() {
-    this.onValueChange.emit({invoker: ValueChangeInvoker.FROM_PANEL, value: this.time.value})
+    this.onValueChange?.emit({invoker: ValueChangeInvoker.FROM_PANEL, value: this.time.value})
   }
 }

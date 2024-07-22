@@ -44,10 +44,10 @@ export default function(options: Schema): Rule {
         ),
         MergeStrategy.Overwrite
       ),
-      addModule('AppRoutingModule', './app-routing.module'),
-      addModule('IconsProviderModule', './icons-provider.module'),
-      addModule('NzLayoutModule', 'ng-zorro-antd/layout'),
-      addModule('NzMenuModule', 'ng-zorro-antd/menu')
+      addModule('AppRoutingModule', './app-routing.module', options),
+      addModule('IconsProviderModule', './icons-provider.module', options),
+      addModule('NzLayoutModule', 'ng-zorro-antd/layout', options),
+      addModule('NzMenuModule', 'ng-zorro-antd/menu', options)
     ]);
   }
 }

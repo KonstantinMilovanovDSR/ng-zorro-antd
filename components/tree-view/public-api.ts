@@ -15,3 +15,4 @@ export * from './padding';
 export * from './toggle';
 export * from './tree-view';
 export * from './tree-virtual-scroll-view';
+export * from './tree'

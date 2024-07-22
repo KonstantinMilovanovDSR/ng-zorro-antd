@@ -16,9 +16,8 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzPopoverComponent, NzPopoverDirective } from './popover';
 
 @NgModule({
-  exports: [NzPopoverDirective, NzPopoverComponent],
-  entryComponents: [NzPopoverComponent],
-  declarations: [NzPopoverDirective, NzPopoverComponent],
-  imports: [BidiModule, CommonModule, OverlayModule, NzOutletModule, NzOverlayModule, NzNoAnimationModule, NzToolTipModule]
+    exports: [NzPopoverDirective, NzPopoverComponent],
+    declarations: [NzPopoverDirective, NzPopoverComponent],
+    imports: [BidiModule, CommonModule, OverlayModule, NzOutletModule, NzOverlayModule, NzNoAnimationModule, NzToolTipModule]
 })
 export class NzPopoverModule {}

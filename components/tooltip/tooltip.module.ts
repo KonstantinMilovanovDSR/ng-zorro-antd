@@ -14,9 +14,8 @@ import { NzOverlayModule } from 'ng-zorro-antd/core/overlay';
 import { NzToolTipComponent, NzTooltipDirective } from './tooltip';
 
 @NgModule({
-  declarations: [NzToolTipComponent, NzTooltipDirective],
-  exports: [NzToolTipComponent, NzTooltipDirective],
-  entryComponents: [NzToolTipComponent],
-  imports: [BidiModule, CommonModule, OverlayModule, NzOutletModule, NzOverlayModule, NzNoAnimationModule]
+    declarations: [NzToolTipComponent, NzTooltipDirective],
+    exports: [NzToolTipComponent, NzTooltipDirective],
+    imports: [BidiModule, CommonModule, OverlayModule, NzOutletModule, NzOverlayModule, NzNoAnimationModule]
 })
 export class NzToolTipModule {}

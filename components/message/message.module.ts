@@ -14,8 +14,7 @@ import { NzMessageComponent } from './message.component';
 import { NzMessageServiceModule } from './message.service.module';
 
 @NgModule({
-  imports: [BidiModule, CommonModule, OverlayModule, NzIconModule, NzOutletModule, NzMessageServiceModule],
-  declarations: [NzMessageContainerComponent, NzMessageComponent],
-  entryComponents: [NzMessageContainerComponent]
+    imports: [BidiModule, CommonModule, OverlayModule, NzIconModule, NzOutletModule, NzMessageServiceModule],
+    declarations: [NzMessageContainerComponent, NzMessageComponent]
 })
 export class NzMessageModule {}

@@ -139,7 +139,7 @@ export class TimeHolder {
     return this._use12Hours && isNotNil(this.hours) ? this.calculateViewHour(this.hours!) : this.hours;
   }
 
-  setSelected12Hours(value: string | undefined, nzUse12Hours): void {
+  setSelected12Hours(value: string | undefined, nzUse12Hours: any): void {
     this._use12Hours = nzUse12Hours
     if (value!.toUpperCase() !== this.selected12Hours) {
       this.selected12Hours = value!.toUpperCase();

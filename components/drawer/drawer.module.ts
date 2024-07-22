@@ -18,18 +18,17 @@ import { NzDrawerComponent } from './drawer.component';
 import { NzDrawerServiceModule } from './drawer.service.module';
 
 @NgModule({
-  imports: [
-    BidiModule,
-    CommonModule,
-    OverlayModule,
-    PortalModule,
-    NzIconModule,
-    NzOutletModule,
-    NzNoAnimationModule,
-    NzDrawerServiceModule
-  ],
-  exports: [NzDrawerComponent, NzDrawerContentDirective],
-  declarations: [NzDrawerComponent, NzDrawerContentDirective],
-  entryComponents: [NzDrawerComponent]
+    imports: [
+        BidiModule,
+        CommonModule,
+        OverlayModule,
+        PortalModule,
+        NzIconModule,
+        NzOutletModule,
+        NzNoAnimationModule,
+        NzDrawerServiceModule
+    ],
+    exports: [NzDrawerComponent, NzDrawerContentDirective],
+    declarations: [NzDrawerComponent, NzDrawerContentDirective]
 })
 export class NzDrawerModule {}

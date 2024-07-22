@@ -3,6 +3,7 @@ import { getProjectFromWorkspace, getProjectTargetOptions } from '@angular/cdk/s
 import { updateWorkspace } from '@schematics/angular/utility/workspace';
 import { cyan, yellow } from 'chalk';
 import { Schema } from '../schema';
+import { WorkspaceDefinition } from '@angular-devkit/core/src/workspace/definitions';
 
 const iconPathSegment = '@ant-design/icons-angular';
 const iconAssetObject = {
@@ -13,7 +14,7 @@ const iconAssetObject = {
 
 export function addIconToAssets(options: Schema): Rule {
   return updateWorkspace(workspace => {
-    const project = getProjectFromWorkspace(workspace, options.project);
+    const project = getProjectFromWorkspace(workspace as unknown as WorkspaceDefinition, options.project);
     const targetOptions = getProjectTargetOptions(project, 'build');
 
     if (!targetOptions.assets) {
@@ -32,5 +33,5 @@ export function addIconToAssets(options: Schema): Rule {
         return;
       }
     }
-  });
+  }) as unknown as Rule;
 }
