@@ -13,9 +13,14 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "target": "es2015",
-    "typeRoots": ["node_modules/@types/!(node)"],
-    "lib": ["es2018", "dom"],
+    "target": "ES2022",
+    "typeRoots": [
+      "node_modules/@types/!(node)"
+    ],
+    "lib": [
+      "es2018",
+      "dom"
+    ],
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "noImplicitAny": true,
@@ -25,6 +30,9 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "types": ["jasmine"]
+    "types": [
+      "jasmine"
+    ],
+    "useDefineForClassFields": false
   }
 }
